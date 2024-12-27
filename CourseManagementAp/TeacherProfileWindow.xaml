@@ -1,0 +1,31 @@
+﻿<Window x:Class="CourseManagementAp.TeacherProfileWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:CourseManagementAp"
+        mc:Ignorable="d"
+         Title="Профиль преподавателя" Height="450" Width="400">
+    <Grid>
+        <!-- ФИО преподавателя -->
+        <TextBlock Text="ФИО:" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="10,10,0,0"/>
+        <TextBlock x:Name="FullNameText" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="100,10,0,0"/>
+
+        <!-- Email преподавателя -->
+        <TextBlock Text="Email:" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="10,40,0,0"/>
+        <TextBlock x:Name="EmailText" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="100,40,0,0"/>
+
+        <!-- DataGrid для отображения курсов преподавателя -->
+        <TextBlock Text="Курсы, которые вы ведете:" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="10,70,0,0"/>
+        <DataGrid x:Name="CoursesDataGrid" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="100,70,0,0" Width="250" Height="150" AutoGenerateColumns="True"/>
+
+        <!-- Кнопка для смены пароля -->
+        <Button Content="Изменить пароль" Width="200" Height="40" VerticalAlignment="Top" HorizontalAlignment="Center" Margin="0,241,0,0" Click="ChangePasswordButton_Click"/>
+
+        <!-- Кнопка для редактирования курса -->
+        <Button Content="Редактировать курс" Width="200" Height="40" VerticalAlignment="Top" HorizontalAlignment="Center" Margin="0,301,0,0" Click="EditCourseButton_Click"/>
+
+        <!-- Кнопка для составления отчета -->
+        <Button Content="Составить отчет" Width="200" Height="40" VerticalAlignment="Top" HorizontalAlignment="Center" Margin="0,369,0,0" Click="GenerateReportButton_Click"/>
+    </Grid>
+</Window>

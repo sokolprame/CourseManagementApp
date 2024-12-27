@@ -1,0 +1,32 @@
+﻿<Window x:Class="CourseManagementAp.RegisterWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:CourseManagementAp"
+        mc:Ignorable="d"
+        Title="RegisterWindow" Height="451" Width="498">
+    <Grid RenderTransformOrigin="0.5,0.5" Margin="0,0,-150,1" HorizontalAlignment="Right" Width="790">
+        <Grid.RenderTransform>
+            <TransformGroup>
+                <ScaleTransform/>
+                <SkewTransform/>
+                <RotateTransform Angle="0.105"/>
+                <TranslateTransform/>
+            </TransformGroup>
+        </Grid.RenderTransform>
+        <!-- TextBox для FIO -->
+        <TextBox x:Name="FullNameTextBox" Margin="258,99,297,302" VerticalContentAlignment="Center"/>
+        <TextBlock Name="FullNameWatermark" Text="ФИО" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="193,108,0,0" Foreground="Gray"/>
+
+        <!-- TextBox для Email -->
+        <TextBox x:Name="EmailTextBox" Height="30" Margin="259,153,298,250" VerticalContentAlignment="Center"/>
+        <TextBlock Name="EmailWatermark" Text="Email" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="189,157,0,0" Foreground="Gray"/>
+
+        <!-- PasswordBox для пароля -->
+        <PasswordBox x:Name="PasswordBox" Width="200" Height="30" Margin="264,206,301,197" VerticalContentAlignment="Center"/>
+        <TextBlock Name="PasswordWatermark" Text="Пароль" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="184,213,0,0" Foreground="Gray"/>
+
+        <Button Content="Зарегистрироваться" Width="200" Height="40" Margin="268,281,297,112" Click="RegisterButton_Click"/>
+    </Grid>
+</Window>

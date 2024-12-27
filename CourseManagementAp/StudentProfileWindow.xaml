@@ -1,0 +1,34 @@
+﻿<Window x:Class="CourseManagementAp.StudentProfileWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:CourseManagementAp"
+        mc:Ignorable="d"
+       Title="Профиль студента" Height="443" Width="400">
+    <Grid>
+        <!-- ФИО -->
+        <TextBlock Text="ФИО:" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="10,10,0,0"/>
+        <TextBlock x:Name="FullNameText" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="100,10,0,0"/>
+
+        <!-- Email -->
+        <TextBlock Text="Email:" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="10,40,0,0"/>
+        <TextBlock x:Name="EmailText" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="100,40,0,0"/>
+
+        <!-- Текущий курс -->
+        <TextBlock Text="Текущий курс:" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="10,70,0,0"/>
+        <TextBlock x:Name="CurrentCourseText" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="100,70,0,0"/>
+
+        <!-- DataGrid для отображения курсов студента -->
+        <DataGrid x:Name="CoursesDataGrid" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="10,100,10,10" AutoGenerateColumns="True" Width="380" Height="150"/>
+
+        <!-- Кнопка для смены пароля -->
+        <Button Content="Изменить пароль" Width="200" Height="40" VerticalAlignment="Top" HorizontalAlignment="Center" Margin="10,270,10,10" Click="ChangePasswordButton_Click"/>
+
+        <!-- Кнопка для подачи заявки на новый курс -->
+        <Button Content="Подать заявку на курс" Width="200" Height="40" VerticalAlignment="Top" HorizontalAlignment="Center" Margin="10,320,10,10" Click="ApplyForCourseButton_Click"/>
+
+        <!-- Кнопка для генерации PDF -->
+        <Button Content="Сгенерировать PDF" Width="200" Height="40" VerticalAlignment="Top" HorizontalAlignment="Center" Margin="10,370,10,10" Click="GeneratePDFButton_Click"/>
+    </Grid>
+</Window>
