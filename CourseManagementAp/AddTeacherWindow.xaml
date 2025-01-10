@@ -1,21 +1,25 @@
 ﻿<Window x:Class="CourseManagementAp.AddTeacherWindow"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
-        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-        xmlns:local="clr-namespace:CourseManagementAp"
-        mc:Ignorable="d"
-       Title="Добавить преподавателя" Height="318" Width="400">
-    <Grid Margin="0,0,0,-6">
-        <TextBlock Text="ФИО преподавателя" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="34,34,0,0"/>
-        <TextBox x:Name="TeacherNameTextBox" Width="200" Height="30" Margin="171,34,29,244"/>
+        Title="Добавить преподавателя" Height="350" Width="400">
+    <Grid Margin="10">
+        <!-- ФИО преподавателя -->
+        <TextBlock Text="ФИО:" VerticalAlignment="Top" Margin="0,10,0,0"/>
+        <TextBox x:Name="FullNameTextBox" VerticalAlignment="Top" Margin="0,35,0,0" Height="25"/>
 
-        <TextBlock Text="Email" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="76,91,0,0"/>
-        <TextBox x:Name="TeacherEmailTextBox" Width="200" Height="30" Margin="171,84,29,194"/>
+        <!-- Email преподавателя -->
+        <TextBlock Text="Email:" VerticalAlignment="Top" Margin="0,70,0,0"/>
+        <TextBox x:Name="EmailTextBox" VerticalAlignment="Top" Margin="0,95,0,0" Height="25"/>
 
-        <TextBlock Text="Телефон" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="67,149,0,0"/>
-        <TextBox x:Name="TeacherPhoneTextBox" Width="200" Height="30" Margin="171,139,29,139"/>
+        <!-- Телефон преподавателя -->
+        <TextBlock Text="Телефон:" VerticalAlignment="Top" Margin="0,130,0,0"/>
+        <TextBox x:Name="PhoneTextBox" VerticalAlignment="Top" Margin="0,155,0,0" Height="25"/>
 
-        <Button Content="Добавить преподавателя" Width="200" Height="40" VerticalAlignment="Top" HorizontalAlignment="Center" Margin="0,234,0,0" Click="AddTeacherButton_Click"/>
+        <!-- Специализация преподавателя -->
+        <TextBlock Text="Специализация:" VerticalAlignment="Top" Margin="0,190,0,0"/>
+        <TextBox x:Name="SpecializationTextBox" VerticalAlignment="Top" Margin="0,215,0,0" Height="25"/>
+
+        <!-- Кнопка добавления -->
+        <Button Content="Добавить преподавателя" VerticalAlignment="Bottom" Margin="0,0,0,10" Height="40" Click="AddTeacherButton_Click"/>
     </Grid>
 </Window>

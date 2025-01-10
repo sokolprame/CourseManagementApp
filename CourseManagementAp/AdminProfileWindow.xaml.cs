@@ -1,29 +1,17 @@
 ﻿using CourseManagementApp.Models;
 using System;
-using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows;
-using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
-using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Shapes;
+using Microsoft.EntityFrameworkCore;
 
 namespace CourseManagementAp
 {
-    /// <summary>
-    /// Логика взаимодействия для AdminProfileWindow.xaml
-    /// </summary>
     public partial class AdminProfileWindow : Window
     {
-        private ApplicationDbContext _context;
-        private User _currentUser;
+        private readonly ApplicationDbContext _context;
+        private readonly Users _currentUser;
 
-        public AdminProfileWindow(User user)
+        public AdminProfileWindow(Users user)
         {
             InitializeComponent();
             _context = new ApplicationDbContext();
@@ -45,9 +33,10 @@ namespace CourseManagementAp
             var teachers = _context.Teachers
                 .Select(t => new
                 {
-                    t.FullName,
-                    t.Email,
-                    t.Phone
+                    t.TeacherId,        // Идентификатор преподавателя
+                    t.FullName,         // ФИО
+                    t.Email,            // Email
+                    t.Phone             // Телефон
                 })
                 .ToList();
 
@@ -58,21 +47,31 @@ namespace CourseManagementAp
         private void ChangePasswordButton_Click(object sender, RoutedEventArgs e)
         {
             var changePasswordWindow = new ChangePasswordWindow(user: _currentUser);
-            changePasswordWindow.Show();
+            changePasswordWindow.ShowDialog();
         }
 
         // Обработчик для редактирования преподавателя
         private void EditTeacherButton_Click(object sender, RoutedEventArgs e)
         {
-            var selectedTeacher = TeachersDataGrid.SelectedItem as Teacher; // Используем Teacher
+            // Получаем выбранного преподавателя из DataGrid
+            var selectedTeacher = TeachersDataGrid.SelectedItem;
+
             if (selectedTeacher != null)
             {
-                var teacherEmail = selectedTeacher.Email;
-                var teacher = _context.Teachers.FirstOrDefault(t => t.Email == teacherEmail);
+                // Получаем ID преподавателя из выбранной строки
+                var teacherId = (int)selectedTeacher.GetType().GetProperty("TeacherId")?.GetValue(selectedTeacher);
+
+                // Ищем преподавателя в базе данных по ID
+                var teacher = _context.Teachers.FirstOrDefault(t => t.TeacherId == teacherId);
+
                 if (teacher != null)
                 {
+                    // Открываем окно для редактирования преподавателя
                     var editTeacherWindow = new EditTeacherWindow(teacher);
-                    editTeacherWindow.Show();
+                    editTeacherWindow.ShowDialog();
+
+                    // После редактирования обновляем данные
+                    LoadTeachers();
                 }
             }
             else
@@ -84,9 +83,41 @@ namespace CourseManagementAp
         // Обработчик для добавления нового преподавателя
         private void AddTeacherButton_Click(object sender, RoutedEventArgs e)
         {
-            // Открыть окно для добавления нового преподавателя
-            var addTeacherWindow = new AddTeacherWindow();  // Убедитесь, что это окно существует
-            addTeacherWindow.Show();
+            var addTeacherWindow = new AddTeacherWindow();
+            if (addTeacherWindow.ShowDialog() == true) // Если добавление завершилось успешно
+            {
+                LoadTeachers(); // Обновляем список преподавателей
+            }
+        }
+
+        // Обработчик для удаления преподавателя
+        private void DeleteTeacherButton_Click(object sender, RoutedEventArgs e)
+        {
+            // Получаем выбранного преподавателя из DataGrid
+            var selectedTeacher = TeachersDataGrid.SelectedItem;
+
+            if (selectedTeacher != null)
+            {
+                // Получаем ID преподавателя из выбранной строки
+                var teacherId = (int)selectedTeacher.GetType().GetProperty("TeacherId")?.GetValue(selectedTeacher);
+
+                // Ищем преподавателя в базе данных по ID
+                var teacher = _context.Teachers.FirstOrDefault(t => t.TeacherId == teacherId);
+
+                if (teacher != null)
+                {
+                    // Удаляем преподавателя из базы данных
+                    _context.Teachers.Remove(teacher);
+                    _context.SaveChanges();
+
+                    MessageBox.Show("Преподаватель успешно удалён.");
+                    LoadTeachers(); // Обновляем список преподавателей
+                }
+            }
+            else
+            {
+                MessageBox.Show("Выберите преподавателя для удаления.");
+            }
         }
     }
 }

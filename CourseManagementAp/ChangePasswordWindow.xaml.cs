@@ -20,10 +20,10 @@ namespace CourseManagementAp
     /// </summary>
     public partial class ChangePasswordWindow : Window
     {
-        private User _currentUser;
+        private Users _currentUser;
         private ApplicationDbContext _context;
 
-        public ChangePasswordWindow(User user)
+        public ChangePasswordWindow(Users user)
         {
             InitializeComponent();
             _currentUser = user;

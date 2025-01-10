@@ -5,7 +5,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:CourseManagementAp"
         mc:Ignorable="d"
-         Title="Профиль преподавателя" Height="450" Width="400">
+        Title="Профиль преподавателя" Height="513" Width="400">
     <Grid>
         <!-- ФИО преподавателя -->
         <TextBlock Text="ФИО:" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="10,10,0,0"/>
@@ -17,15 +17,18 @@
 
         <!-- DataGrid для отображения курсов преподавателя -->
         <TextBlock Text="Курсы, которые вы ведете:" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="10,70,0,0"/>
-        <DataGrid x:Name="CoursesDataGrid" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="100,70,0,0" Width="250" Height="150" AutoGenerateColumns="True"/>
+        <DataGrid x:Name="CoursesDataGrid" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="10,91,0,0" Width="363" Height="150" AutoGenerateColumns="True"/>
 
         <!-- Кнопка для смены пароля -->
-        <Button Content="Изменить пароль" Width="200" Height="40" VerticalAlignment="Top" HorizontalAlignment="Center" Margin="0,241,0,0" Click="ChangePasswordButton_Click"/>
+        <Button Content="Изменить пароль" Width="200" Height="40" VerticalAlignment="Top" HorizontalAlignment="Center" Margin="0,253,0,0" Click="ChangePasswordButton_Click"/>
+
+        <!-- Кнопка для добавления курса -->
+        <Button Content="Добавить курс" Width="200" Height="40" VerticalAlignment="Top" HorizontalAlignment="Center" Margin="0,313,0,0" Click="AddCourseButton_Click"/>
 
         <!-- Кнопка для редактирования курса -->
-        <Button Content="Редактировать курс" Width="200" Height="40" VerticalAlignment="Top" HorizontalAlignment="Center" Margin="0,301,0,0" Click="EditCourseButton_Click"/>
+        <Button Content="Редактировать курс" Width="200" Height="40" VerticalAlignment="Top" HorizontalAlignment="Center" Margin="0,373,0,0" Click="EditCourseButton_Click"/>
 
-        <!-- Кнопка для составления отчета -->
-        <Button Content="Составить отчет" Width="200" Height="40" VerticalAlignment="Top" HorizontalAlignment="Center" Margin="0,369,0,0" Click="GenerateReportButton_Click"/>
+        <!-- Кнопка для удаления курса -->
+        <Button Content="Удалить курс" Width="200" Height="40" VerticalAlignment="Top" HorizontalAlignment="Center" Margin="0,433,0,0" Click="DeleteCourseButton_Click"/>
     </Grid>
 </Window>

@@ -1,48 +1,79 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using System.Security.Cryptography;
 using System.Windows;
-using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
-using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Shapes;
+using Microsoft.EntityFrameworkCore;
 
 namespace CourseManagementAp
 {
-    /// <summary>
-    /// Логика взаимодействия для LoginWindow.xaml
-    /// </summary>
     public partial class LoginWindow : Window
     {
-        private ApplicationDbContext _context;
+        private readonly ApplicationDbContext _context;
 
         public LoginWindow()
         {
             InitializeComponent();
-            _context = new ApplicationDbContext();
+            _context = new ApplicationDbContext(); // Ваш контекст базы данных
         }
 
-        private void LoginButton_Click(object sender, RoutedEventArgs e)
+        private async void LoginButton_Click(object sender, RoutedEventArgs e)
         {
-            var email = EmailTextBox.Text;
-            var password = PasswordTextBox.Password;
+            // Получаем данные из полей
+            var email = EmailTextBox.Text.Trim();
+            var password = PasswordTextBox.Password.Trim();
 
-            var user = _context.users.SingleOrDefault(u => u.Email == email && u.PasswordHash == password);
-
-            if (user != null)
+            // Проверяем, что поля не пустые
+            if (string.IsNullOrWhiteSpace(email) || string.IsNullOrWhiteSpace(password))
             {
-                MessageBox.Show("Вход выполнен успешно!");
-                this.Close(); // Закрыть окно входа
+                ErrorTextBlock.Text = "Пожалуйста, заполните все поля.";
+                return;
             }
-            else
+
+            try
             {
-                MessageBox.Show("Неверный логин или пароль.");
+                // Ищем пользователя по email
+                var user = await _context.Users
+                    .SingleOrDefaultAsync(u => u.Email.ToLower() == email.ToLower());
+
+                // Проверяем, найден ли пользователь и совпадает ли пароль
+                if (user != null && user.PasswordHash == password)  // Сравниваем без хэширования
+                {
+                    ErrorTextBlock.Text = ""; // Очищаем сообщение об ошибке
+                    MessageBox.Show("Вход выполнен успешно!", "Успех", MessageBoxButton.OK, MessageBoxImage.Information);
+
+                    // Закрываем текущее окно
+                    this.Close();
+
+                    // Открываем окно в зависимости от роли пользователя
+                    switch (user.Role)
+                    {
+                        case "Администратор":
+                            var adminProfile = new AdminProfileWindow(user);
+                            adminProfile.Show();
+                            break;
+                        case "Преподаватель":
+                            var teacherProfile = new TeacherProfileWindow(user);
+                            teacherProfile.Show();
+                            break;
+                        case "Студент":
+                            var studentProfile = new StudentProfileWindow(user);
+                            studentProfile.Show();
+                            break;
+                        default:
+                            MessageBox.Show("Неизвестная роль пользователя.", "Ошибка", MessageBoxButton.OK, MessageBoxImage.Error);
+                            break;
+                    }
+                }
+                else
+                {
+                    ErrorTextBlock.Text = "Неверный email или пароль.";
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Произошла ошибка: {ex.Message}", "Ошибка", MessageBoxButton.OK, MessageBoxImage.Error);
             }
         }
+
     }
 }

@@ -1,11 +1,7 @@
 ﻿<Window x:Class="CourseManagementAp.AdminProfileWindow"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
-        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-        xmlns:local="clr-namespace:CourseManagementAp"
-        mc:Ignorable="d"
-           Title="Профиль администратора" Height="450" Width="400">
+        Title="Профиль администратора" Height="500" Width="446">
     <Grid>
         <!-- ФИО администратора -->
         <TextBlock Text="ФИО:" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="10,10,0,0"/>
@@ -17,15 +13,19 @@
 
         <!-- DataGrid для отображения преподавателей -->
         <TextBlock Text="Преподаватели:" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="10,70,0,0"/>
-        <DataGrid x:Name="TeachersDataGrid" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="100,70,0,0" Width="250" Height="150" AutoGenerateColumns="True"/>
+        <DataGrid x:Name="TeachersDataGrid" HorizontalAlignment="Center" VerticalAlignment="Top" Margin="0,105,0,0" Width="380" Height="250" AutoGenerateColumns="False" SelectionMode="Single">
+            <!-- Явное определение столбцов для DataGrid -->
+            <DataGrid.Columns>
+                <DataGridTextColumn Header="ФИО" Binding="{Binding FullName}" Width="*"/>
+                <DataGridTextColumn Header="Email" Binding="{Binding Email}" Width="*"/>
+                <DataGridTextColumn Header="Телефон" Binding="{Binding Phone}" Width="*"/>
+            </DataGrid.Columns>
+        </DataGrid>
 
-        <!-- Кнопка для смены пароля -->
-        <Button Content="Изменить пароль" Width="200" Height="40" VerticalAlignment="Top" HorizontalAlignment="Center" Margin="10,230,10,10" Click="ChangePasswordButton_Click"/>
-
-        <!-- Кнопка для добавления нового преподавателя -->
-        <Button Content="Добавить преподавателя" Width="200" Height="40" VerticalAlignment="Top" HorizontalAlignment="Center" Margin="0,285,0,0" Click="AddTeacherButton_Click"/>
-
-        <!-- Кнопка для редактирования преподавателя -->
-        <Button Content="Редактировать преподавателя" Width="200" Height="40" VerticalAlignment="Top" HorizontalAlignment="Center" Margin="0,342,0,0" Click="EditTeacherButton_Click"/>
+        <!-- Кнопки -->
+        <Button Content="Изменить пароль" Width="180" Height="40" VerticalAlignment="Bottom" HorizontalAlignment="Left" Margin="10,0,0,10" Click="ChangePasswordButton_Click"/>
+        <Button Content="Добавить преподавателя" Width="180" Height="40" VerticalAlignment="Bottom" HorizontalAlignment="Right" Margin="0,0,256,65" Click="AddTeacherButton_Click" RenderTransformOrigin="0.474,0.528"/>
+        <Button Content="Редактировать преподавателя" Width="180" Height="40" VerticalAlignment="Bottom" HorizontalAlignment="Left" Margin="246,0,0,65" Click="EditTeacherButton_Click"/>
+        <Button Content="Удалить преподавателя" Width="180" Height="40" VerticalAlignment="Bottom" HorizontalAlignment="Right" Margin="0,0,20,10" Click="DeleteTeacherButton_Click"/>
     </Grid>
 </Window>

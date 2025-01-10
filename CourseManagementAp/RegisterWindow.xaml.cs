@@ -1,17 +1,8 @@
 ﻿using CourseManagementApp.Models;
 using System;
-using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
-using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Shapes;
 
 namespace CourseManagementAp
 {
@@ -30,37 +21,61 @@ namespace CourseManagementAp
 
         private void RegisterButton_Click(object sender, RoutedEventArgs e)
         {
-            var fullName = FullNameTextBox.Text;
-            var email = EmailTextBox.Text;
-            var password = PasswordBox.Password;
-
-            if (string.IsNullOrEmpty(fullName) || string.IsNullOrEmpty(email) || string.IsNullOrEmpty(password))
+            try
             {
-                MessageBox.Show("Пожалуйста, заполните все поля.");
-                return;
+                var fullName = FullNameTextBox.Text.Trim();
+                var email = EmailTextBox.Text.Trim();
+                var password = PasswordBox.Password.Trim();
+
+                // Проверка, что поля не пустые
+                if (string.IsNullOrEmpty(fullName) || string.IsNullOrEmpty(email) || string.IsNullOrEmpty(password))
+                {
+                    MessageBox.Show("Пожалуйста, заполните все поля.");
+                    return;
+                }
+
+                // Проверка существования пользователя с таким же email
+                var existingUser = _context.Users.SingleOrDefault(u => u.Email.ToLower() == email.ToLower());
+                if (existingUser != null)
+                {
+                    MessageBox.Show("Пользователь с таким email уже существует.");
+                    return;
+                }
+
+                // Создание нового пользователя без хэширования пароля
+                var user = new Users
+                {
+                    FullName = fullName,
+                    Email = email,
+                    PasswordHash = password,  // Сохраняем пароль без хэширования
+                    Role = "Студент"
+                };
+
+                // Добавление пользователя в контекст
+                _context.Users.Add(user);
+                _context.SaveChanges(); // Сохранение изменений в базе данных
+
+                // Создание студента с привязкой к пользователю
+                var student = new Student
+                {
+                    FullName = fullName,
+                    Email = email,
+                    Phone = "", // Можно задать номер телефона, если нужно
+                    UserId = user.UserId  // Привязываем студента к учетной записи пользователя
+                };
+
+                // Добавление студента
+                _context.Students.Add(student);
+                _context.SaveChanges(); // Сохранение изменений в базе данных
+
+                MessageBox.Show("Пользователь и студент успешно зарегистрированы!");
+                this.Close(); // Закрытие окна регистрации
             }
-
-            var existingUser = _context.users.SingleOrDefault(u => u.Email == email);
-            if (existingUser != null)
+            catch (Exception ex)
             {
-                MessageBox.Show("Пользователь с таким email уже существует.");
-                return;
+                MessageBox.Show($"Произошла ошибка: {ex.Message}");
             }
-
-            var user = new User
-            {
-                FullName = fullName,
-                Email = email,
-                PasswordHash = password,  // В реальном приложении необходимо шифровать пароль
-                Role = "Студент"
-            };
-
-            _context.users.Add(user);
-            _context.SaveChanges();
-
-            MessageBox.Show("Пользователь успешно зарегистрирован!");
-            this.Close(); // Закрыть окно регистрации
         }
-    }
 
+    }
 }

@@ -24,13 +24,14 @@ namespace CourseManagementAp
     public partial class StudentProfileWindow : Window
     {
         private ApplicationDbContext _context;
-        private User _currentUser;
+        private Users _currentUser;
 
-        public StudentProfileWindow(User user)
+        public StudentProfileWindow(Users user)
         {
             InitializeComponent();
-            _context = new ApplicationDbContext();
-            _currentUser = user;
+            _context = new ApplicationDbContext();  // Инициализация контекста
+
+            _currentUser = user;  // Убедитесь, что переданный user не равен null
             PopulateProfile();
             LoadStudentCourses();
         }
@@ -43,20 +44,30 @@ namespace CourseManagementAp
 
         private void LoadStudentCourses()
         {
-            var courses = _context.Enrollments
-                .Where(e => e.StudentID == _currentUser.userid)
-                .Join(_context.Courses,
-                    enrollment => enrollment.CourseID,
-                    course => course.CourseID,
-                    (enrollment, course) => new
-                    {
-                        course.Name,
-                        course.Description,
-                        course.Duration,
-                        course.Price
-                    }).ToList();
+            // Получаем StudentId для текущего пользователя
+            var student = _context.Students.SingleOrDefault(s => s.UserId == _currentUser.UserId);
 
-            CoursesDataGrid.ItemsSource = courses;
+            if (student != null)
+            {
+                // Получаем все курсы, на которые записан студент
+                var courses = from enrollment in _context.Enrollments
+                              join course in _context.Courses on enrollment.CourseId equals course.CourseId
+                              where enrollment.StudentId == student.StudentId  // Фильтруем по StudentId
+                              select new
+                              {
+                                  course.Name,
+                                  course.Description,
+                                  course.Duration,
+                                  course.Price
+                              };
+
+                // Убедитесь, что курсы правильно подгружаются в DataGrid
+                CoursesDataGrid.ItemsSource = courses.ToList();
+            }
+            else
+            {
+                MessageBox.Show("Студент не найден в базе данных.");
+            }
         }
 
         private void ChangePasswordButton_Click(object sender, RoutedEventArgs e)
@@ -68,57 +79,92 @@ namespace CourseManagementAp
         private void ApplyForCourseButton_Click(object sender, RoutedEventArgs e)
         {
             var availableCourses = _context.Courses
-                .Where(c => !c.Enrollments.Any(e => e.StudentID == _currentUser.userid)).ToList();
+                .Where(c => !_context.Enrollments.Any(e => e.StudentId == _currentUser.UserId && e.CourseId == c.CourseId))
+                .ToList();
 
-            var applyCourseWindow = new ApplyForCourseWindow(availableCourses, _currentUser);
+            // Передаем ссылку на окно профиля
+            var applyCourseWindow = new ApplyForCourseWindow(availableCourses, _currentUser, this);
             applyCourseWindow.Show();
         }
 
+
         private void GeneratePDFButton_Click(object sender, RoutedEventArgs e)
         {
-            // Создание нового PDF-документа с использованием PDFsharp
-            PdfDocument document = new PdfDocument();
-            document.Info.Title = "Заявка на курс";
-
-            // Добавление страницы
-            PdfPage page = document.AddPage();
-
-            // Получаем XGraphics для рисования
-            XGraphics gfx = XGraphics.FromPdfPage(page);
-
-            // Шрифт для текста
-            XFont font = new XFont("Verdana", 12);
-
-            // Рисуем текст в PDF
-            gfx.DrawString($"Заявка на курс для студента: {_currentUser.FullName}", font, XBrushes.Black, new XPoint(20, 40));
-            gfx.DrawString($"Email: {_currentUser.Email}", font, XBrushes.Black, new XPoint(20, 60));
-
-            // Получаем все курсы студента
-            var courses = _context.Enrollments
-                .Where(e => e.StudentID == _currentUser.userid)
-                .Join(_context.Courses, enrollment => enrollment.CourseID, course => course.CourseID, (enrollment, course) => course)
-                .ToList();
-
-            if (courses.Any())  // Проверка, есть ли курсы
+            try
             {
-                int yPos = 80;
-                foreach (var course in courses)
+                // Создаем новый PDF-документ
+                PdfDocument document = new PdfDocument
                 {
-                    gfx.DrawString($"Курс: {course.Name} | Описание: {course.Description}", font, XBrushes.Black, new XPoint(20, yPos));
-                    yPos += 20;
+                    Info = { Title = "Заявка на курс" }
+                };
+
+                // Добавляем страницу в документ
+                PdfPage page = document.AddPage();
+                XGraphics gfx = XGraphics.FromPdfPage(page);
+                XFont font = new XFont("Verdana", 12);
+
+                int margin = 20;
+                int lineSpacing = 20;
+                int yPosition = margin;
+
+                // Добавляем информацию о студенте
+                gfx.DrawString($"Заявка на курс для студента: {_currentUser.FullName}", font, XBrushes.Black, new XPoint(margin, yPosition));
+                yPosition += lineSpacing;
+                gfx.DrawString($"Email: {_currentUser.Email}", font, XBrushes.Black, new XPoint(margin, yPosition));
+                yPosition += lineSpacing;
+
+                // Получаем список курсов, на которые записан студент
+                var courses = _context.Enrollments
+                    .Where(e => e.StudentId == _currentUser.UserId)
+                    .Join(
+                        _context.Courses,
+                        enrollment => enrollment.CourseId,
+                        course => course.CourseId,
+                        (enrollment, course) => course
+                    )
+                    .ToList();
+
+                if (courses.Any())
+                {
+                    // Если курсы найдены, добавляем их в PDF
+                    foreach (var course in courses)
+                    {
+                        gfx.DrawString($"Курс: {course.Name}", font, XBrushes.Black, new XPoint(margin, yPosition));
+                        yPosition += lineSpacing;
+                        gfx.DrawString($"Описание: {course.Description}", font, XBrushes.Black, new XPoint(margin, yPosition));
+                        yPosition += lineSpacing;
+                        gfx.DrawString($"Продолжительность: {course.Duration} часов", font, XBrushes.Black, new XPoint(margin, yPosition));
+                        yPosition += lineSpacing;
+                        gfx.DrawString($"Стоимость: {course.Price} руб.", font, XBrushes.Black, new XPoint(margin, yPosition));
+                        yPosition += lineSpacing * 2; // Отступ между курсами
+
+                        // Проверка на выход за границы страницы
+                        if (yPosition + lineSpacing > page.Height - margin)
+                        {
+                            page = document.AddPage();
+                            gfx = XGraphics.FromPdfPage(page);
+                            yPosition = margin;
+                        }
+                    }
                 }
+                else
+                {
+                    // Если курсы не найдены, выводим сообщение
+                    gfx.DrawString("Студент не записан на курсы.", font, XBrushes.Black, new XPoint(margin, yPosition));
+                }
+
+                // Устанавливаем путь для сохранения PDF
+                string filename = System.IO.Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments), "StudentApplication.pdf");
+                document.Save(filename);
+
+                // Сообщаем об успешном создании PDF
+                MessageBox.Show($"PDF успешно создан: {filename}");
             }
-            else
+            catch (Exception ex)
             {
-                gfx.DrawString("Студент не записан на курсы.", font, XBrushes.Black, new XPoint(20, 80));
+                // Обрабатываем исключения
+                MessageBox.Show($"Произошла ошибка при создании PDF: {ex.Message}");
             }
-
-            // Сохранение документа в файл на рабочем столе
-            string filename = System.IO.Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.Desktop), "StudentApplication.pdf");
-            document.Save(filename);
-
-            // Сообщение о завершении
-            MessageBox.Show($"PDF успешно создан: {filename}");
         }
     }
 }

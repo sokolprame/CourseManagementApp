@@ -2,28 +2,16 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows;
-using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
-using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Shapes;
 
 namespace CourseManagementAp
 {
-    /// <summary>
-    /// Логика взаимодействия для TeacherProfileWindow.xaml
-    /// </summary>
     public partial class TeacherProfileWindow : Window
     {
         private ApplicationDbContext _context;
-        private User _currentUser;
+        private Users _currentUser;
 
-        public TeacherProfileWindow(User user)
+        public TeacherProfileWindow(Users user)
         {
             InitializeComponent();
             _context = new ApplicationDbContext();
@@ -42,12 +30,11 @@ namespace CourseManagementAp
         // Метод для загрузки курсов, которые ведет преподаватель
         private void LoadCourses()
         {
-            // Загружаем курсы, которые ведет преподаватель
             var courses = _context.Courses
-                .Where(c => c.teacherid == _currentUser.userid)
+                .Where(c => c.TeacherId == _currentUser.UserId)
                 .Select(c => new CourseDetails
                 {
-                    CourseID = c.CourseID, // Добавляем CourseID
+                    CourseID = c.CourseId,
                     Name = c.Name,
                     Description = c.Description,
                     Duration = c.Duration,
@@ -55,8 +42,43 @@ namespace CourseManagementAp
                 })
                 .ToList();
 
-            // Заполняем DataGrid данными о курсах
             CoursesDataGrid.ItemsSource = courses;
+        }
+
+        // Обработчик для добавления курса
+        private void AddCourseButton_Click(object sender, RoutedEventArgs e)
+        {
+            var addCourseWindow = new AddCourseWindow(_currentUser);
+            if (addCourseWindow.ShowDialog() == true) // Окно возвращает true при успешном добавлении
+            {
+                LoadCourses(); // Перезагружаем список курсов
+            }
+        }
+
+        // Обработчик для удаления курса
+        private void DeleteCourseButton_Click(object sender, RoutedEventArgs e)
+        {
+            var selectedCourse = CoursesDataGrid.SelectedItem as CourseDetails;
+            if (selectedCourse != null)
+            {
+                var course = _context.Courses.FirstOrDefault(c => c.CourseId == selectedCourse.CourseID);
+                if (course != null)
+                {
+                    var result = MessageBox.Show($"Вы уверены, что хотите удалить курс \"{course.Name}\"?",
+                                                 "Подтверждение", MessageBoxButton.YesNo);
+                    if (result == MessageBoxResult.Yes)
+                    {
+                        _context.Courses.Remove(course);
+                        _context.SaveChanges();
+                        MessageBox.Show("Курс успешно удален.");
+                        LoadCourses(); // Перезагружаем список курсов
+                    }
+                }
+            }
+            else
+            {
+                MessageBox.Show("Выберите курс для удаления.");
+            }
         }
 
         // Обработчик для смены пароля
@@ -69,15 +91,15 @@ namespace CourseManagementAp
         // Обработчик для редактирования курса
         private void EditCourseButton_Click(object sender, RoutedEventArgs e)
         {
-            var selectedCourse = CoursesDataGrid.SelectedItem as CourseDetails;  // Используем CourseDetails
+            var selectedCourse = CoursesDataGrid.SelectedItem as CourseDetails;
             if (selectedCourse != null)
             {
-                var courseId = selectedCourse.CourseID;  // Используем CourseID
-                var selectedCourseFromDb = _context.Courses.FirstOrDefault(c => c.CourseID == courseId);
-                if (selectedCourseFromDb != null)
+                var course = _context.Courses.FirstOrDefault(c => c.CourseId == selectedCourse.CourseID);
+                if (course != null)
                 {
-                    var editCourseWindow = new EditCourseWindow(selectedCourseFromDb);
-                    editCourseWindow.Show();
+                    var editCourseWindow = new EditCourseWindow(course);
+                    editCourseWindow.ShowDialog(); // Дожидаемся закрытия окна
+                    LoadCourses(); // Перезагружаем данные после закрытия окна
                 }
             }
             else
@@ -86,20 +108,19 @@ namespace CourseManagementAp
             }
         }
 
+
         // Обработчик для составления отчета по курсу
         private void GenerateReportButton_Click(object sender, RoutedEventArgs e)
         {
-            var selectedCourse = CoursesDataGrid.SelectedItem as CourseDetails;  // Используем CourseDetails
+            var selectedCourse = CoursesDataGrid.SelectedItem as CourseDetails;
             if (selectedCourse != null)
             {
-                var courseId = selectedCourse.CourseID;  // Используем CourseID
                 var students = _context.Enrollments
-                    .Where(e => e.CourseID == courseId)
-                    .Select(e => e.Student)
+                    .Where(e => e.CourseId == selectedCourse.CourseID)
+                    .Select(e => e.StudentId)
                     .ToList();
 
                 MessageBox.Show($"Количество студентов на курсе: {students.Count}");
-                // Для генерации более сложного отчета можно добавить дополнительные данные
             }
             else
             {

@@ -5,7 +5,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:CourseManagementAp"
         mc:Ignorable="d"
-       Title="Профиль студента" Height="443" Width="400">
+       Title="Профиль студента" Height="465" Width="400">
     <Grid>
         <!-- ФИО -->
         <TextBlock Text="ФИО:" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="10,10,0,0"/>
@@ -26,9 +26,9 @@
         <Button Content="Изменить пароль" Width="200" Height="40" VerticalAlignment="Top" HorizontalAlignment="Center" Margin="10,270,10,10" Click="ChangePasswordButton_Click"/>
 
         <!-- Кнопка для подачи заявки на новый курс -->
-        <Button Content="Подать заявку на курс" Width="200" Height="40" VerticalAlignment="Top" HorizontalAlignment="Center" Margin="10,320,10,10" Click="ApplyForCourseButton_Click"/>
+        <Button Content="Подать заявку на курс" Width="200" Height="40" VerticalAlignment="Top" HorizontalAlignment="Center" Margin="0,326,0,0" Click="ApplyForCourseButton_Click"/>
 
         <!-- Кнопка для генерации PDF -->
-        <Button Content="Сгенерировать PDF" Width="200" Height="40" VerticalAlignment="Top" HorizontalAlignment="Center" Margin="10,370,10,10" Click="GeneratePDFButton_Click"/>
+        <Button Content="Сгенерировать PDF" Width="200" Height="40" VerticalAlignment="Top" HorizontalAlignment="Center" Margin="0,381,0,0" Click="GeneratePDFButton_Click"/>
     </Grid>
 </Window>

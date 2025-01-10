@@ -1,23 +1,8 @@
 ﻿using CourseManagementApp.Models;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows;
-using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
-using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Shapes;
 
 namespace CourseManagementAp
 {
-    /// <summary>
-    /// Логика взаимодействия для EditTeacherWindow.xaml
-    /// </summary>
     public partial class EditTeacherWindow : Window
     {
         private Teacher _teacher;
@@ -37,14 +22,27 @@ namespace CourseManagementAp
 
         private void SaveTeacherButton_Click(object sender, RoutedEventArgs e)
         {
-            // Сохраняем изменения в преподавателе
-            _teacher.FullName = TeacherNameTextBox.Text;
-            _teacher.Email = TeacherEmailTextBox.Text;
-            _teacher.Phone = TeacherPhoneTextBox.Text;
+            try
+            {
+                // Сохраняем изменения в объекте
+                _teacher.FullName = TeacherNameTextBox.Text.Trim();
+                _teacher.Email = TeacherEmailTextBox.Text.Trim();
+                _teacher.Phone = TeacherPhoneTextBox.Text.Trim();
 
-            _context.SaveChanges();
-            MessageBox.Show("Информация о преподавателе успешно обновлена.");
-            this.Close();
+                // Отмечаем объект как изменённый в контексте
+                _context.Teachers.Attach(_teacher);
+                _context.Entry(_teacher).State = Microsoft.EntityFrameworkCore.EntityState.Modified;
+
+                // Сохраняем изменения в базе данных
+                _context.SaveChanges();
+
+                MessageBox.Show("Информация о преподавателе успешно обновлена.");
+                this.Close();
+            }
+            catch (System.Exception ex)
+            {
+                MessageBox.Show($"Произошла ошибка при сохранении изменений: {ex.Message}");
+            }
         }
     }
 }

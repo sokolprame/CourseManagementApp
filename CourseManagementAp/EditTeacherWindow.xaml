@@ -5,15 +5,15 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:CourseManagementAp"
         mc:Ignorable="d"
-        Title="Редактировать преподавателя" Height="300" Width="400">
-    <Grid>
+        Title="Редактировать преподавателя" Height="303" Width="426">
+    <Grid Margin="0,0,0,-6">
         <TextBlock Text="ФИО преподавателя" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="24,39,0,0"/>
         <TextBox x:Name="TeacherNameTextBox" Width="200" Height="30" Margin="164,32,36,222"/>
 
-        <TextBlock Text="Email" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="52,81,0,0"/>
+        <TextBlock Text="Email" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="52,90,0,0"/>
         <TextBox x:Name="TeacherEmailTextBox" Width="200" Height="30" Margin="164,81,36,173"/>
 
-        <TextBlock Text="Телефон" HorizontalAlignment="Left" VerticalAlignment="Center" Margin="42,0,0,0"/>
+        <TextBlock Text="Телефон" HorizontalAlignment="Left" VerticalAlignment="Center" Margin="52,0,0,0"/>
         <TextBox x:Name="TeacherPhoneTextBox" Width="200" Height="30" Margin="164,127,36,127"/>
 
         <Button Content="Сохранить изменения" Width="200" Height="40" VerticalAlignment="Top" HorizontalAlignment="Center" Margin="10,200,10,10" Click="SaveTeacherButton_Click"/>

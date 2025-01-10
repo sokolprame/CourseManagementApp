@@ -4,19 +4,25 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
+// Models/Enrollment.cs
 namespace CourseManagementApp.Models
 {
-    namespace CourseManagementApp.Models
+    public class Enrollment
     {
-        public class Enrollment
-        {
-            public int EnrollmentID { get; set; }
-            public int StudentID { get; set; }
-            public int CourseID { get; set; }
+        public int EnrollmentId { get; set; }  // Первичный ключ
 
-            public Student Student { get; set; }
-            public Course Course { get; set; }
-        }
+        // Внешний ключ на таблицу Students
+        public int StudentId { get; set; }
+        public Student Student { get; set; }  // Навигационное свойство
+
+        // Внешний ключ на таблицу Courses
+        public int CourseId { get; set; }
+        public Course Course { get; set; }  // Навигационное свойство
+
+        // Внешний ключ на Users (для связывания с пользователем)
+        public int UserId { get; set; }
+        public Users User { get; set; }  // Навигационное свойство для User
     }
-
 }
+
+
